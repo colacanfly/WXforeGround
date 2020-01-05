@@ -1,0 +1,8 @@
+<view class="index">
+  <view class="index-hd">
+    <image class="index-logo" src="resources/images/22.png"></image>
+    <view class="index-desc">我是皮卡丘！！  
+  </view>
+  </view>
+  
+</view>
