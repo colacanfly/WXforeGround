@@ -1,6 +1,6 @@
 {
   "pages": [
-    "pages/comment/index"
+    "pages/index/index"
   ],
   "window": {
     "navigationBarTitleText": "Demo"
@@ -10,8 +10,6 @@
     "downloadFile": 10000
   },
   "debug": true,
-  "navigateToMiniProgramAppIdList": [
-    "wxe5f52902cf4de896"
-  ],
+  "style": "v2",
   "sitemapLocation": "sitemap17.json"
 }

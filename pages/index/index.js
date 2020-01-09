@@ -1,54 +1,79 @@
-//index.js
-//获取应用实例
-const app = getApp()
 
+var i =0;
+var bgColor;
+var t;
 Page({
-  data: {
-    motto: 'Hello World',
-    userInfo: {},
-    hasUserInfo: false,
-    canIUse: wx.canIUse('button.open-type.getUserInfo')
-  },
-  //事件处理函数
-  bindViewTap: function() {
-    wx.navigateTo({
-      url: '../logs/logs'
-    })
+  /*** 页面的初始数据*/
+  data:{
+    result : '',
+    scores: [],
+    n : '',
+    index : '',
+    index_color : '',
   },
   onLoad: function () {
-    if (app.globalData.userInfo) {
-      this.setData({
-        userInfo: app.globalData.userInfo,
-        hasUserInfo: true
-      })
-    } else if (this.data.canIUse){
-      // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-      // 所以此处加入 callback 以防止这种情况
-      app.userInfoReadyCallback = res => {
-        this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true
-        })
+    console.log('我是父元素')
+     wx.request({
+       url: 'http://127.0.0.1:8000/connect',
+       header:{
+        "content-type": "application/x-www-form-urlencoded"		//使用POST方法要带上这个header
+      },
+       method: 'GET',
+       success: res => {
+         if (res.statusCode == 200) {
+           console.log(res.data)
+           this.setData({
+             n: res.data.n,
+             scores:res.data.scores
+           })
+         }
       }
-    } else {
-      // 在没有 open-type=getUserInfo 版本的兼容处理
-      wx.getUserInfo({
-        success: res => {
-          app.globalData.userInfo = res.userInfo
+     })
+  },
+  changeColor: function(e) {
+    // this.index = e.currentTarget.id;
+    // console.log(e.currentTarget.id)
+    t = parseInt(e.currentTarget.id);
+    console.log(this.data.scores[t])
+    var temp = this.data.scores[t]
+    if (temp == 'green') {
+      bgColor = 'red';
+    }else if(temp == 'red'){
+      bgColor = 'yellow';
+    }else if(temp == 'yellow'){
+      bgColor = 'green';
+    }
+    console.log(parseInt(e.currentTarget.id))
+    this.data.scores[t] = bgColor;
+    this.setData({
+      scores : this.data.scores
+    })
+    wx.request({
+      url: 'http://127.0.0.1:8000/update',	//获取服务器地址，此处为本地地址
+      header:{
+        "content-type": "application/x-www-form-urlencoded"		//使用POST方法要带上这个header
+      },
+      method: "POST",
+      data: {		//向服务器发送的信息
+        index : t ,
+        index_color : bgColor
+      },
+      success: res => {
+        if (res.statusCode == 200) {
           this.setData({
-            userInfo: res.userInfo,
-            hasUserInfo: true
+            result: res.data.result	//服务器返回的结果
           })
         }
-      })
-    }
-  },
-  getUserInfo: function(e) {
-    console.log(e)
-    app.globalData.userInfo = e.detail.userInfo
-    this.setData({
-      userInfo: e.detail.userInfo,
-      hasUserInfo: true
+      }
     })
+
+    // 设置背景颜色数据
+
+    // this.setData( {
+
+    //   score: bgColor
+
+    // } );
+
   }
 })
